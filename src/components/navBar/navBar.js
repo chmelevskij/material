@@ -126,7 +126,7 @@ function MdNavBar($mdAria, $mdTheming) {
             'aria-label="{{ctrl.navBarAriaLabel}}">' +
           '</ul>' +
         '</nav>' +
-        '<md-nav-ink-bar ng-hide="ctrl.mdNoInkBar"></md-nav-ink-bar>' +
+        '<md-nav-ink-bar class="hidding" ng-hide="ctrl.mdNoInkBar"></md-nav-ink-bar>' +
       '</div>',
     link: function(scope, element, attrs, ctrl) {
       $mdTheming(element);
@@ -247,16 +247,21 @@ MdNavBarController.prototype._updateTabs = function(newValue, oldValue) {
  * @private
  */
 MdNavBarController.prototype._updateInkBarStyles = function(tab, newIndex, oldIndex) {
+  var self = this;
   this._inkbar.toggleClass('_md-left', newIndex < oldIndex)
       .toggleClass('_md-right', newIndex > oldIndex);
 
   this._inkbar.css({display: newIndex < 0 ? 'none' : ''});
 
   if (tab) {
+    this._inkbar.toggleClass('hidding');
     var tabEl = tab.getButtonEl();
     var left = tabEl.offsetLeft;
 
     this._inkbar.css({left: left + 'px', width: tabEl.offsetWidth + 'px'});
+    setTimeout(function(){
+      self._inkbar.toggleClass('hidding');
+    }, 500);
   }
 };
 

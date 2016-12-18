@@ -38,7 +38,36 @@ $md-nav-bar-height: 48px;
   &:hover {
     background-color: inherit;
   }
+
+  &::after {
+  $duration: $swift-ease-in-out-duration * 0.5;
+  $multiplier: 0.5;
+    opacity: 0;
+    content: "";
+    height: 2px;
+    width: 100%;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: black;
+
+    &.ng-animate {
+      transition: none;
+    }
+  }
+
+  &.md-active::after {
+    animation: appear 0.5s;
+    opacity: 1;
+  }
 }
+
+@keyframes appear {
+  0% { opacity: 0;}
+  100% { opacity: 1;}
+}
+
 
 md-nav-ink-bar {
   $duration: $swift-ease-in-out-duration * 0.5;
@@ -52,11 +81,11 @@ md-nav-ink-bar {
 
   &._md-left {
     transition: left ($duration * $multiplier) $swift-ease-in-out-timing-function,
-        right $duration $swift-ease-in-out-timing-function;
+    right $duration $swift-ease-in-out-timing-function;
   }
   &._md-right {
     transition: left $duration $swift-ease-in-out-timing-function,
-        right ($duration * $multiplier) $swift-ease-in-out-timing-function;
+    right ($duration * $multiplier) $swift-ease-in-out-timing-function;
   }
 
   // By default $ngAnimate looks for transition durations on the element, when using ng-hide, ng-if, ng-show.
@@ -66,6 +95,10 @@ md-nav-ink-bar {
     transition: none;
   }
 
+}
+
+.hidding {
+  opacity: 0;
 }
 
 md-nav-extra-content {
