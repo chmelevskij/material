@@ -22,6 +22,7 @@ $md-nav-bar-height: 48px;
 
 .md-nav-item:first-of-type {
   margin-left: 8px;
+  position: relative;
 }
 
 // override button styles to look more like tabs
@@ -38,34 +39,38 @@ $md-nav-bar-height: 48px;
   &:hover {
     background-color: inherit;
   }
-
-  &::after {
-  $duration: $swift-ease-in-out-duration * 0.5;
-  $multiplier: 0.5;
-    opacity: 0;
-    content: "";
-    height: 2px;
-    width: 100%;
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background-color: black;
-
-    &.ng-animate {
-      transition: none;
-    }
-  }
-
-  &.md-active::after {
-    animation: appear 0.5s;
-    opacity: 1;
-  }
 }
 
-@keyframes appear {
-  0% { opacity: 0;}
-  100% { opacity: 1;}
+//==- my styles -==\\
+@keyframes from-left {
+  from { transform: translateX(-50px);}
+  to {transform: translateX(0px);}
+}
+@keyframes from-right {
+  from { transform: translateX(50px);}
+  to {transform: translateX(0px);}
+}
+.ink-bar-wrapper {
+  position: relative;
+  float: left;
+
+}
+.activated{
+	overflow: visible;
+	&::after {
+		opacity: 1;
+		content: "";
+		height: 2px;
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		background-color: black;
+		transition: opacity 1s;
+	}
+	&.ng-animate {
+		transition: none;
+	}
 }
 
 

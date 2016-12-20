@@ -226,27 +226,65 @@ MdNavBarController.prototype._updateTabs = function(newValue, oldValue) {
   var newIndex = -1;
   var newTab = this._getTabByName(newValue);
   var oldTab = this._getTabByName(oldValue);
+  var oldWrapper;
+  var newWrapper;
 
   if (oldTab) {
+    oldWrapper = angular.element(oldTab._$element[0].querySelector('.md-button._md-nav-button'));
+    oldWrapper.toggleClass('activated');
     oldTab.setSelected(false);
     oldIndex = tabs.indexOf(oldTab);
   }
 
   if (newTab) {
+      //console.log(angular.element(newTab._$element[0].querySelector('div.ink-bar-wrapper')).toggleClass('activated'));
+    newWrapper = angular.element(newTab._$element[0].querySelector('.md-button._md-nav-button'));
+    window.newTab = newWrapper;
+    newWrapper.toggleClass('activated');
     newTab.setSelected(true);
     newIndex = tabs.indexOf(newTab);
   }
 
+      var sheet = document.createElement('style');
+    if (newIndex < oldIndex){
+    var oldTabEl =oldTab.getButtonEl();
+    var oleft = oldTabEl.offsetLeft;
+	var newTabEl = newTab.getButtonEl();
+    var nleft = newTabEl.offsetLeft;
+	console.log('new < old\n' + nleft + ' < ' + oleft);
+	var start = oleft - nleft;
+	console.log(start);
+
+      sheet.innerHTML ='@keyframes movee{ 0% { transform: translateX(' + start + 'px); } 100% { transform: translateX(0px); } }';
+	  document.body.appendChild(sheet);
+      var  sss = document.styleSheets[document.styleSheets.length -1 ];
+      sss.insertRule('.activated::after {animation: movee 1s; }', sss.cssRules.length - 1);
+  }
+    if (newIndex > oldIndex){
+    var oldTabEl =oldTab.getButtonEl();
+    var oleft = oldTabEl.offsetLeft;
+	var newTabEl = newTab.getButtonEl();
+    var nleft = newTabEl.offsetLeft;
+	console.log('new > old\n' + nleft + ' < ' + oleft);
+
+      sheet.innerHTML ='@keyframes movee{ 0% { transform: translateX(' + (oleft - nleft) + 'px); } 100% { transform: translateX(0px); } }';
+	  document.body.appendChild(sheet);
+      var  sss = document.styleSheets[document.styleSheets.length -1 ];
+      sss.insertRule('.activated::after {animation: movee 1s; }', sss.cssRules.length - 1);
+  }
+
+    /*
   this._$timeout(function() {
-    self._updateInkBarStyles(newTab, newIndex, oldIndex);
+    self._updateInkBarStyles(newTab, newIndex, oldIndex, newWrapper);
   });
+  */
 };
 
 /**
  * Repositions the ink bar to the selected tab.
  * @private
  */
-MdNavBarController.prototype._updateInkBarStyles = function(tab, newIndex, oldIndex) {
+MdNavBarController.prototype._updateInkBarStyles = function(tab, newIndex, oldIndex, newWrapper) {
   var self = this;
   this._inkbar.toggleClass('_md-left', newIndex < oldIndex)
       .toggleClass('_md-right', newIndex > oldIndex);
@@ -254,14 +292,10 @@ MdNavBarController.prototype._updateInkBarStyles = function(tab, newIndex, oldIn
   this._inkbar.css({display: newIndex < 0 ? 'none' : ''});
 
   if (tab) {
-    this._inkbar.toggleClass('hidding');
     var tabEl = tab.getButtonEl();
     var left = tabEl.offsetLeft;
 
     this._inkbar.css({left: left + 'px', width: tabEl.offsetWidth + 'px'});
-    setTimeout(function(){
-      self._inkbar.toggleClass('hidding');
-    }, 500);
   }
 };
 
@@ -423,8 +457,8 @@ function MdNavItem($$rAF) {
       navigationOptions = hasSrefOpts ? 'ui-sref-opts="{{ctrl.srefOpts}}" ' : '';
 
       if (navigationAttribute) {
-        buttonTemplate = '' +
-          '<md-button class="_md-nav-button md-accent" ' +
+        buttonTemplate = 
+          '<md-button class="_md-nav-button md-accent  previous" ' +
             'ng-class="ctrl.getNgClassMap()" ' +
             'ng-blur="ctrl.setFocused(false)" ' +
             'tabindex="-1" ' +
